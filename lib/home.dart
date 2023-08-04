@@ -22,11 +22,15 @@ class _HomeState extends State<Home> {
   //   activeScreen = StartScreen(switchScreen);
   //   super.initState();
   // }
-
-  void switchScreen() {
+  void resetAnswers() {
     setState(() {
-      // activeScreen = const QuestionScreen();
-      activeScreen = 'question-screen';
+      selectedAnswer = [];
+    });
+  }
+
+  void switchScreen(String screenName) {
+    setState(() {
+      activeScreen = screenName;
     });
   }
 
@@ -41,14 +45,17 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    Widget screenWidget = StartScreen(switchScreen);
+    Widget screenWidget = StartScreen(onSwitchScreen: switchScreen);
 
     if (activeScreen == 'question-screen') {
       screenWidget = QuestionScreen(onSelectAnswer: selectAnswer);
     }
 
     if (activeScreen == 'results-screen') {
-      screenWidget = ResultsScreen(selectedAnswers: selectedAnswer);
+      screenWidget = ResultsScreen(
+          onSwitchScreen: switchScreen,
+          selectedAnswers: selectedAnswer,
+          resetAnswers: resetAnswers);
     }
 
     return MaterialApp(

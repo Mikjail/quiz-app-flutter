@@ -3,14 +3,17 @@ import 'package:quizz_app_flutter/data/quiestions.dart';
 import 'package:quizz_app_flutter/questions_summary.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({
-    super.key,
-    required this.selectedAnswers,
-  });
+  const ResultsScreen(
+      {super.key,
+      required this.selectedAnswers,
+      required this.onSwitchScreen,
+      required this.resetAnswers});
 
   final List<String> selectedAnswers;
+  final void Function(String) onSwitchScreen;
+  final void Function() resetAnswers;
 
-  List<Map<String, Object>> getSummaryData() {
+  List<Map<String, Object>> get summaryData {
     final List<Map<String, Object>> summary = [];
     for (var i = 0; i < selectedAnswers.length; i++) {
       summary.add({
@@ -25,9 +28,8 @@ class ResultsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summaryData = getSummaryData();
     final numTotalQuestions = questions.length;
-    final numberCorrectAnswers = getSummaryData()
+    final numberCorrectAnswers = summaryData
         .where((data) => data['answer'] == data['user_answer'])
         .length;
     return SizedBox(
@@ -68,10 +70,13 @@ class ResultsScreen extends StatelessWidget {
                           )),
                     ])),
                 const SizedBox(height: 40),
-                QuestionsSummary(getSummaryData()),
+                QuestionsSummary(summaryData),
                 const SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onSwitchScreen('start-screen');
+                    resetAnswers();
+                  },
                   child: const Text('Restart Quiz'),
                 ),
               ]),
